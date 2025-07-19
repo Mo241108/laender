@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Länder-Auszählspiel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Länder-Auszählspiel</h1>
+  <p id="status">Gib ein echtes Land ein und drücke Hinzufügen.</p>
+  <input type="text" id="eingabe" placeholder="z. B. Deutschland">
+  <button id="hinzufuegen">Hinzufügen</button>
+  <button id="fertig">Fertig</button>
+
+  <div id="zusammenfassung" class="modal hidden">
+    <div class="modal-content">
+      <h2>Zusammenfassung</h2>
+      <pre id="liste"></pre>
+      <button id="schliessen">Schließen</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
