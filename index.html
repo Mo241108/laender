@@ -1,10 +1,38 @@
-<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Länder-Auszählspiel</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 400px;
+      margin: 2rem auto;
+      text-align: center;
+    }
+    input, button { margin: 0.5rem; padding: 0.5rem; }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 300px;
+      text-align: left;
+    }
+    .hidden { display: none; }
+    pre { white-space: pre-wrap; }
+  </style>
 </head>
 <body>
   <h1>Länder-Auszählspiel</h1>
@@ -21,6 +49,83 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    // Integrierte Liste der gültigen Länder (ISO-Länderliste, Kleinbuchstaben)
+    const validCountries = [
+      "afghanistan","albanien","algerien","andorra","angola","antigua und barbuda","argentinien",
+      "armenien","australien","österreich","aserbaidschan","bahamas","bahrain","bangladesch","barbados",
+      "weissrussland","belgien","belize","benin","bhutan","bolivien","bosnien und herzegowina","botswana",
+      "brasilien","brunei","bulgarien","burkina faso","burundi","côte d'ivoire","kap verde","kambodscha",
+      "kamerun","kanada","zentralafrikanische republik","chad","chile","china","kolumbien","komoren","kongo",
+      "kongo, demokratische republik","kroatien","kuba","zypern","tschechische republik","dänemark","dschibuti",
+      "dominica","dominikanische republik","ecuador","Ägypten","el salvador","äquatorialguinea","eritrea",
+      "estland","eswatini","äthiopien","fidschi","finnland","frankreich","gabun","gambia","georgien",
+      "deutschland","ghana","griechenland","grenada","guatemala","guinea","guinea-bissau","guyana","haiti",
+      "honduras","ungarn","island","indien","indonesien","iran","irak","irland","israel","italien","jamaika",
+      "japan","jordanien","kasachstan","kenia","kiribati","koreas demokratische volksrepublik","südkorea","kosovo",
+      "kroatien","kuba","kuwait","kirgisistan","laos","lettland","libanon","lesotho","liberia","libyen",
+      "liechtenstein","litauen","luxemburg","madagaskar","malawi","malaysia","malediven","mali","malta",
+      "marshallinseln","mauretanien","mauritius","mexiko","mikronesien","moldau","monaco","mongolei","montenegro",
+      "marokko","mosambik","myanmar","namibia","nauru","nepal","niederlande","neuseeland","nicaragua","niger",
+      "nigeria","nordmazedonien","norwegen","oman","pakistan","palau","panama","papua-neuguinea","paraguay",
+      "peru","philippinen","polen","portugal","katar","rumänien","russland","ruanda","saint kitts und nevis",
+      "saint lucia","saint vincent und die grenadinen","samoa","san marino","sao tome und principe","saudi-arabien",
+      "senegal","serbien","seychellen","sierra leone","singapur","slowakei","slowenien","salomonen","somalia",
+      "südafrika","südsudan","spanien","sri lanka","sudan","suriname","schweden","schweiz","syrien","taiwan",
+      "tadschikistan","tansania","thailand","togo","tonga","trinidad und tobago","tunesien","türkei","turkmenistan",
+      "tuvalu","uganda","ukraine","vereinigte arabische emirate","großbritannien","verei­nig­te staaten von amerika","uruguay",
+      "usbekistan","vanuatu","vatikanstadt","venezuela","vietnam","jemen","sambia","simbabwe"
+    ];
+
+    const status = document.getElementById('status');
+    const eingabe = document.getElementById('eingabe');
+    const btnAdd = document.getElementById('hinzufuegen');
+    const btnDone = document.getElementById('fertig');
+    const modal = document.getElementById('zusammenfassung');
+    const listeEl = document.getElementById('liste');
+    const btnClose = document.getElementById('schliessen');
+
+    const laenderSet = new Set();
+
+    function capitalize(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    btnAdd.addEventListener('click', () => {
+      const land = eingabe.value.trim();
+      const landLC = land.toLowerCase();
+      if (!land) {
+        status.textContent = 'Bitte gib zuerst ein Land ein!';
+      } else if (!validCountries.includes(landLC)) {
+        status.textContent = `'${land}' ist kein gültiges Land.`;
+      } else if (laenderSet.has(landLC)) {
+        status.textContent = `Das Land '${land}' wurde schon genannt.`;
+      } else {
+        laenderSet.add(landLC);
+        status.textContent = `'${land}' hinzugefügt. Insgesamt: ${laenderSet.size}`;
+      }
+      eingabe.value = '';
+      eingabe.focus();
+    });
+
+    btnDone.addEventListener('click', () => {
+      let text = `Du hast insgesamt ${laenderSet.size} verschiedene Länder genannt:\n\n`;
+      let i = 1;
+      for (let land of laenderSet) {
+        text += `${i++}. ${capitalize(land)}\n`;
+      }
+      listeEl.textContent = text;
+      modal.classList.remove('hidden');
+    });
+
+    btnClose.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+
+    // Enter-Taste löst Hinzufügen aus
+    eingabe.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') btnAdd.click();
+    });
+  </script>
 </body>
 </html>
